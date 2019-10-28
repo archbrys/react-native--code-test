@@ -73,18 +73,4 @@ const App = () => {
     );
 };
 
-export default class Wrapper extends React.Component {
-    state = { count: 1 };
-
-    componentDidMount() {
-        setInterval(() => {
-            this.setState(state => ({
-                count: state.count + 1,
-            }));
-        }, 500);
-    }
-
-    render() {
-        return <App count={this.state.count} />;
-    }
-}
+export default App;
