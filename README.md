@@ -10,7 +10,7 @@ Use the package manager [npm](https://www.npmjs.com/get-npm) to install dependen
 npm install
 ```
 
-Run `react-native run-ios` inside your the project folder:
+Run `react-native run-ios` inside the project folder:
 
 ```bash
 react-native run-ios
