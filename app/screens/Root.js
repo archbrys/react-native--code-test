@@ -27,9 +27,14 @@ export class Root extends Component {
     }
 
     componentDidMount() {
+        this.loadUsers();
+    }
+
+    loadUsers = (page = 1) => {
         setTimeout(() => {
-            this.props.fetchUsers(this.props.page, (res) => {
+            this.props.fetchUsers(page, (res) => {
                 this.setState({
+                    isLoadingMore : false,
                     isLoading : false
                 })
 
@@ -39,20 +44,13 @@ export class Root extends Component {
     }
 
     handleLoadMore = () => {
+        if (this.state.isLoading) return; // wait for first fetch to finish
         if (!this.state.isLoadingMore) {
             this.setState({
                 isLoadingMore : true
             })
             const page = this.props.page + 1; // increase page by 1
-            setTimeout(() => {
-                this.props.fetchUsers(page, (res) => {
-                    this.setState({
-                        isLoadingMore : false
-                    })
-
-                    if (!res) console.log("handle error");
-                });
-            }, 5000)
+            this.loadUsers(page)
         }
     }
 

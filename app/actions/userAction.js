@@ -14,6 +14,6 @@ export const fetchUsers = (page = 1, callback) => dispatch => {
         })
         callback(true)
     }, error => {
-        console.log(error);
+        callback(false)
     });
 }
