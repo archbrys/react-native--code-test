@@ -1,3 +1,4 @@
+// Imports: Dependencies
 import React from 'react'
 import {
     FlatList,
@@ -6,7 +7,6 @@ import {
     View
 } from 'react-native';
 import { ListItem, Header } from 'react-native-elements'
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 
 export default function UserList(props) {
 
@@ -43,8 +43,10 @@ export default function UserList(props) {
         <>
             <Header
                 containerStyle={{backgroundColor: "#F1F1F1"}}
-                centerComponent={{ text: "Users", style: { color: 'black', fontSize: 20 } }
-            }
+                centerComponent={{
+                    text: "Users",
+                    style: { color: 'black', fontSize: 20 }
+                }}
             />
             <FlatList
                 data={props.users}
@@ -53,7 +55,7 @@ export default function UserList(props) {
                 onEndReachedThreshold={0.4}
                 onEndReached={props.handleLoadMore}
                 ListFooterComponent={this.renderFooter}
-                 />
+            />
         </>
     )
 }

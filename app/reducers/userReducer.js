@@ -5,8 +5,8 @@ const initialState = {
     noMoreToLoad : false
 };
 
-  // Reducers (Modifies The State And Returns A New State)
-  const userReducer = (state = initialState, action) => {
+// Reducers (Modifies The State And Returns A New State)
+const userReducer = (state = initialState, action) => {
     switch (action.type) {
         // Update Users
         case 'USERS': {

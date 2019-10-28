@@ -1,23 +1,18 @@
+// Imports: Dependencies
 import React, { Component } from 'react'
 import {
-      SafeAreaView,
-      StyleSheet,
-      ScrollView,
-      FlatList,
-      View,
-    //   Text,
-      StatusBar,
-    } from 'react-native';
-
-import {
-    Colors,
-} from 'react-native/Libraries/NewAppScreen';
-
+    SafeAreaView,
+    StyleSheet,
+    View,
+} from 'react-native';
 import { connect } from 'react-redux';
+
+// Imports: Actions
 import {
     fetchUsers
 } from '../actions/userAction'
-// Components
+
+// Imports: Components
 import Loading from './Loading'
 import UserList from './UserList'
 
@@ -65,12 +60,10 @@ export class Root extends Component {
         return (
             <>
                 <SafeAreaView style={styles.container}>
-
                     {this.state.isLoading ?
                         <View style={styles.loadingContainer}>
                             <Loading />
                         </View>
-
                             :
                         <UserList
                             users={this.props.users}
@@ -78,7 +71,6 @@ export class Root extends Component {
                             isLoadingMore={this.state.isLoadingMore}
                             noMoreToLoad={this.props.noMoreToLoad}/>
                     }
-
                 </SafeAreaView>
             </>
         )
