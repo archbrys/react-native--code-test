@@ -1,41 +1,100 @@
- /* <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView> */
+import React, { useEffect, useRef, useState } from 'react'
+import {
+    StyleSheet,
+    View,
+    Animated,
+    Text
+} from 'react-native'
+
+const Circle = ({ backgroundColor = '#3cae6f', size = 100, scale = 1, fadeAnim = 1, top = 0 }) => (
+    <Animated.View
+      style={[
+        {
+          width: size,
+          height: size,
+          borderRadius: 50,
+          backgroundColor,
+          transform: [{ scale }],
+          opacity: fadeAnim,
+          position: "absolute",
+          top: top
+        },
+      ]}
+    />
+  );
+
+  const usePulse = (startDelay = 1000) => {
+    const scale = useRef(new Animated.Value(.5)).current;
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+
+    const pulse = () => {
+            Animated.parallel([
+                Animated.timing(
+                    fadeAnim,
+                    {
+                    toValue: .2,
+                      duration: 500,
+                    }
+                ),
+                Animated.timing(scale, { toValue: 1.2, duration: 3000 }),
+            ]).start(() => {
+                Animated.sequence([
+                    Animated.timing(
+                        fadeAnim,
+                        {
+                            toValue: 0,
+                            duration: 0,
+                        }
+                    ),
+                    Animated.timing(scale, { toValue: 0.5 }),
+                    // Animated.timing(
+                    //     fadeAnim,
+                    //     {
+                    //     toValue: 0.5,
+                    //       duration: 1000,
+                    //     }
+                    // ),
+
+                ]).start(() => pulse());
+            })
+
+    };
+
+    useEffect(() => {
+        const timeout = setTimeout(() => pulse(), startDelay);
+        return () => clearTimeout(timeout);
+    }, []);
+
+    return animate = {
+        scale, fadeAnim
+    };
+  };
+
+  const App = ({ count }) => {
+    const animate = usePulse();
+    const animate2 = usePulse(3000);
+
+    return (
+      <View style={{alignItems: 'center', justifyContent: 'center', position: "relative", top: -50 }}>
+        <Circle scale={animate.scale} fadeAnim={animate.fadeAnim} backgroundColor="#7FB900" />
+        <Circle scale={animate2.scale} fadeAnim={animate2.fadeAnim} backgroundColor="#7FB900" />
+        <Circle backgroundColor="#7FB900" size={25} top={39}/>
+      </View>
+    );
+  };
+
+  export default class Wrapper extends React.Component {
+    state = { count: 1 };
+
+    componentDidMount() {
+      setInterval(() => {
+        this.setState(state => ({
+          count: state.count + 1,
+        }));
+      }, 500);
+    }
+
+    render() {
+      return <App count={this.state.count} />;
+    }
+}

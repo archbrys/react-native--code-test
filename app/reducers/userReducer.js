@@ -1,6 +1,8 @@
 // Initial State
 const initialState = {
     users: [],
+    page: 1,
+    noMoreToLoad : false
 };
 
   // Reducers (Modifies The State And Returns A New State)
@@ -12,7 +14,9 @@ const initialState = {
                 // State
                 ...state,
                 // Redux Store
-                users : [...action.users]
+                users : [...state.users, ...action.users],
+                page: action.page,
+                noMoreToLoad : action.users.length === 0 ? true : false
             }
         }
 

@@ -5,15 +5,15 @@ import {
 import axios from 'axios'
 
 
-export const fetchUsers = () => dispatch => {
-
-    axios.get('https://reqres.in/api/users?page_size=100')
+export const fetchUsers = (page = 1, callback) => dispatch => {
+    axios.get('https://reqres.in/api/users?page='+page)
     .then(response => {
-        console.log(response.data);
         dispatch({
             type: USERS,
-            users : response.data.data
+            users : response.data.data,
+            page : page
         })
+        callback(true)
     }, error => {
         console.log(error);
     });

@@ -18,31 +18,67 @@ import {
     fetchUsers
 } from '../actions/userAction'
 // Components
-import User from './User'
-import Header from './Header'
+import Loading from './Loading'
+import UserList from './UserList'
 
 export class Root extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            isLoading : true,
+            isLoadingMore : false
+        }
+    }
 
     componentDidMount() {
-        this.props.fetchUsers();
+        setTimeout(() => {
+            this.props.fetchUsers(this.props.page, (res) => {
+                this.setState({
+                    isLoading : false
+                })
+
+                if (!res) console.log("handle error");
+            });
+        }, 5000)
+    }
+
+    handleLoadMore = () => {
+        if (!this.state.isLoadingMore) {
+            this.setState({
+                isLoadingMore : true
+            })
+            const page = this.props.page + 1; // increase page by 1
+            setTimeout(() => {
+                this.props.fetchUsers(page, (res) => {
+                    this.setState({
+                        isLoadingMore : false
+                    })
+
+                    if (!res) console.log("handle error");
+                });
+            }, 5000)
+        }
     }
 
     render() {
         return (
             <>
-                <View style={styles.statusContainer}>
-                    <StatusBar barStyle="dark-content" backgroundColor="gray"/>
-                </View>
-                <SafeAreaView>
-                    <Header />
-                    {/* <ScrollView
-                    contentInsetAdjustmentBehavior="automatic"
-                    style={styles.scrollView}> */}
-                        <FlatList
-                        data={this.props.users}
-                        renderItem={({item}) => <User key={item.id} user={item} ></User>}
-                        keyExtractor = { (item) => item.id.toString() } />
-                    {/* </ScrollView> */}
+                <SafeAreaView style={styles.container}>
+
+                    {this.state.isLoading ?
+                        <View style={styles.loadingContainer}>
+                            <Loading />
+                        </View>
+
+                            :
+                        <UserList
+                            users={this.props.users}
+                            handleLoadMore={this.handleLoadMore.bind(this)}
+                            isLoadingMore={this.state.isLoadingMore}
+                            noMoreToLoad={this.props.noMoreToLoad}/>
+                    }
+
                 </SafeAreaView>
             </>
         )
@@ -51,59 +87,13 @@ export class Root extends Component {
 
 
 
-
-const styles = StyleSheet.create({
-    statusContainer: {
-        backgroundColor: "gray",
-        // flex: 1,
-        position: 'relative',
-        top: -10,
-        maxHeight: 100
-    },
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
-});
-
-
 // Map State To Props (Redux Store Passes State To Component)
 const mapStateToProps = (state) => {
     // Redux Store --> Component
     return {
         users: state.userReducer.users,
+        page: state.userReducer.page,
+        noMoreToLoad : state.userReducer.noMoreToLoad
     };
 };
 
@@ -111,3 +101,14 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
     fetchUsers
 })(Root);
+
+
+
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        // alignItems: 'center',
+        justifyContent: 'center',
+    }
+});
